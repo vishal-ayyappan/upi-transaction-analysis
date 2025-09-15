@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadLabel = document.getElementById('upload-label');
     const fileNameDisplay = document.getElementById('file-name');
     const dashboard = document.getElementById('dashboard');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const applyFiltersBtn = document.getElementById('apply-filters');
 
     // --- Chart Instance Variables ---
     let peakHoursChart = null;
@@ -13,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     csvFileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) handleFile(file);
+    });
+
+    applyFiltersBtn.addEventListener('click', () => {
+        sendDataToBackend(null, startDateInput.value, endDateInput.value);
     });
 
     const uploadArea = uploadLabel.parentElement;
@@ -42,9 +49,17 @@ document.addEventListener('DOMContentLoaded', () => {
         sendDataToBackend(file);
     }
 
-    function sendDataToBackend(file) {
+    function sendDataToBackend(file = null, startDate = '', endDate = '') {
         const formData = new FormData();
-        formData.append('file', file);
+        if (file) {
+            formData.append('file', file);
+        }
+        if (startDate) {
+            formData.append('start_date', startDate);
+        }
+        if (endDate) {
+            formData.append('end_date', endDate);
+        }
 
         fetch('http://127.0.0.1:8000/analyze', {
             method: 'POST',
@@ -57,16 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
              }
              return response.json();
         })
-        //
         .then(data => {
             console.log('Success:', data);
-            fileNameDisplay.textContent = `Showing analysis for: ${file.name}`;
+            if (file) {
+                fileNameDisplay.textContent = `Showing analysis for: ${file.name}`;
+            } else {
+                fileNameDisplay.textContent = `Showing filtered data`;
+            }
             updateDashboard(data);
         })
         .catch(error => {
             console.error('Error:', error);
-            alert(`An error occurred: ${error.message}. Please check the console.`);
-            fileNameDisplay.textContent = `Failed to process: ${file.name}`;
+            if (file) {
+                alert(`An error occurred: ${error.message}. Please check the console.`);
+                fileNameDisplay.textContent = `Failed to process: ${file.name}`;
+            } else {
+                // For filtering errors (only for file upload), show alert
+                alert(`An error occurred: ${error.message}. Please check the console.`);
+            }
         })
         .finally(() => {
             // Hide the spinner regardless of success or failure
@@ -79,6 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('total-revenue').textContent = `₹${data.total_revenue.toFixed(2)}`;
         document.getElementById('total-transactions').textContent = data.total_transactions;
         document.getElementById('avg-transaction-value').textContent = `₹${data.avg_transaction_value.toFixed(2)}`;
+
+        // Set date range if not already set
+        if (data.trends.labels.length > 0 && !startDateInput.value) {
+            const dates = data.trends.labels.map(d => new Date(d));
+            const minDate = new Date(Math.min(...dates));
+            const maxDate = new Date(Math.max(...dates));
+            startDateInput.value = minDate.toISOString().split('T')[0];
+            endDateInput.value = maxDate.toISOString().split('T')[0];
+        }
 
         // Update Top Customers Table
         const tableBody = document.getElementById('top-customers-table');
