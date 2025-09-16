@@ -4,94 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UPI Dashboard App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts.js" defer></script>
-</head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-4">
-            <h1 class="text-2xl font-bold text-indigo-600">UPI Dashboard</h1>
+    <header class="page-header">
+        <div class="page-title">
+            <h1>UPI Dashboard</h1>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="main-content">
 
-        <section id="upload-section" class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <div id="summary-section" class="hidden bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg shadow-md mb-8">
-                <h3 class="text-xl font-semibold mb-2">Data Cleaning Summary</h3>
-                <p id="cleaning-summary-text"></p>
+        <section id="upload-section" class="upload-section">
+            <div id="data-cleaning-summary-section" class="data-summary hidden">
+                <h3 class="summary-title">Data Cleaning Summary</h3>
+                <p id="data-cleaning-summary-content"></p>
             </div>
-            <h2 class="text-xl font-semibold mb-4">Upload Your UPI Transaction CSV</h2>
-            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50">
-                <input type="file" id="csv-file-input" accept=".csv" class="hidden">
-                <label for="csv-file-input" id="upload-label" class="cursor-pointer">
-                    <p>Drag & drop your file here, or <span class="text-indigo-600 font-semibold">click to select a file</span>.</p>
+            <h2 class="section-title">Upload Your UPI Transaction CSV</h2>
+            <div class="upload-area">
+                <input type="file" id="transaction-file-input" accept=".csv" class="file-input">
+                <label for="transaction-file-input" id="file-upload-label" class="upload-label">
+                    <p>Drag & drop your file here, or <span class="upload-text">click to select a file</span>.</p>
                 </label>
             </div>
-            <div id="loading-spinner" class="hidden mt-4 flex justify-center items-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                <span class="ml-3 text-gray-600">Analyzing data...</span>
+            <div id="analysis-loading-spinner" class="loading-indicator hidden">
+                <div class="spinner"></div>
+                <span class="spinner-text">Analyzing data...</span>
             </div>
-            <p id="file-name" class="text-center mt-2 text-gray-500"></p>
+            <p id="file-status-display" class="file-status"></p>
         </section>
 
         <section id="dashboard" class="hidden">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <h3 class="text-lg font-semibold text-gray-500">Total Revenue</h3>
-                    <p id="total-revenue" class="text-3xl font-bold mt-2">₹0.00</p>
+            <div class="metrics-grid metrics-grid-tablet">
+                <div class="metric-card">
+                    <h3 class="metric-label">Total Revenue</h3>
+                    <p id="total-revenue" class="metric-value">₹0.00</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <h3 class="text-lg font-semibold text-gray-500">Total Transactions</h3>
-                    <p id="total-transactions" class="text-3xl font-bold mt-2">0</p>
+                <div class="metric-card">
+                    <h3 class="metric-label">Total Transactions</h3>
+                    <p id="total-transactions" class="metric-value">0</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <h3 class="text-lg font-semibold text-gray-500">Avg. Transaction Value</h3>
-                    <p id="avg-transaction-value" class="text-3xl font-bold mt-2">₹0.00</p>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-                <h3 class="text-xl font-semibold mb-4">Date Filters</h3>
-                <div class="flex flex-wrap gap-4">
-                    <div>
-                        <label for="start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                        <input type="date" id="start-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label for="end-date" class="block text-sm font-medium text-gray-700">End Date</label>
-                        <input type="date" id="end-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div class="flex items-end">
-                        <button id="apply-filters" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Apply Filters</button>
-                    </div>
+                <div class="metric-card">
+                    <h3 class="metric-label">Avg. Transaction Value</h3>
+                    <p id="avg-transaction-value" class="metric-value">₹0.00</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold mb-4">Peak Business Hours</h3>
-                    <canvas id="peak-hours-chart"></canvas>
+            <div class="filters-section">
+                <h3 class="filters-title">Date Filters</h3>
+                <div class="filters-form">
+                    <div class="filter-group">
+                        <label for="filter-start-date" class="filter-label">Start Date</label>
+                        <input type="date" id="filter-start-date" class="filter-input">
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-end-date" class="filter-label">End Date</label>
+                        <input type="date" id="filter-end-date" class="filter-input">
+                    </div>
+                    <div class="filter-button-group">
+                        <button id="apply-date-filters" class="apply-filters-button">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid charts-grid-desktop">
+                <div class="chart-card">
+                    <h3 class="chart-title">Peak Business Hours</h3>
+                    <canvas id="peak-business-hours-chart"></canvas>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-xl font-semibold mb-4">Transaction Trends</h3>
-                    <canvas id="trends-line-chart"></canvas>
+                <div class="chart-card">
+                    <h3 class="chart-title">Transaction Trends</h3>
+                    <canvas id="transaction-trends-chart"></canvas>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-md lg:col-span-2">
-                    <h3 class="text-xl font-semibold mb-4">Top 5 Customers (by Value)</h3>
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="py-2">Customer ID/Name</th>
-                                <th class="py-2">Total Spent</th>
-                                <th class="py-2">Number of Visits</th>
+                <div class="chart-card charts-grid-full">
+                    <h3 class="chart-title">Top 5 Customers (by Value)</h3>
+                    <table class="customers-table">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="table-cell">Customer ID/Name</th>
+                                <th class="table-cell">Total Spent</th>
+                                <th class="table-cell table-cell-center">Number of Visits</th>
                             </tr>
                         </thead>
-                        <tbody id="top-customers-table">
+                        <tbody id="top-customers-table" class="table-body">
                             </tbody>
                     </table>
                 </div>
