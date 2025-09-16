@@ -12,6 +12,10 @@ cleaned_df = None
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/styles.css')
+def styles():
+    return send_from_directory('.', 'styles.css')
+
 @app.route('/scripts.js')
 def scripts():
     return send_from_directory('.', 'scripts.js')
