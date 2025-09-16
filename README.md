@@ -11,7 +11,6 @@ Users can upload a raw CSV export, and the dashboard automatically **cleans the 
 - Automated data cleaning using **Pandas**
 - Interactive charts and dashboards with **Chart.js**
 - Lightweight backend powered by **Flask**
-- Clean and responsive UI with **Tailwind CSS**
 
 ---
 
@@ -19,7 +18,7 @@ Users can upload a raw CSV export, and the dashboard automatically **cleans the 
 
 **Frontend**
 - **HTML5**  
-- **Tailwind CSS** -> clean, modern, and responsive design  
+- **CSS** -> clean, modern, and responsive design  
 - **JavaScript** -> user interactions & API communication  
 - **Chart.js** -> interactive data visualizations  
 
