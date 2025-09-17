@@ -3,9 +3,9 @@ import random
 from datetime import datetime, timedelta
 
 # --- Configuration ---
-NUM_RECORDS = 10000
+NUM_RECORDS = 520000
 FILENAME = "messy_transactions.csv"
-CUSTOMER_IDS = [f"cust_{100+i}" for i in range(15)]
+CUSTOMER_IDS = [f"cust_{100+i}" for i in range(1001)]
 # NEW: Define a wider date range
 START_DATE = datetime(2025, 1, 1)
 END_DATE = datetime(2025, 9, 15) # Today's date
@@ -62,7 +62,7 @@ def generate_messy_data():
         writer.writeheader()
         writer.writerows(records)
 
-    print(f"✅ Successfully generated messy data in '{FILENAME}' with {NUM_RECORDS} records from {START_DATE.date()} to {END_DATE.date()}.")
+    print(f"Generated messy data in '{FILENAME}' with {NUM_RECORDS} records from {START_DATE.date()} to {END_DATE.date()}.")
 
 if __name__ == '__main__':
     generate_messy_data()
